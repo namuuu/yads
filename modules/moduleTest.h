@@ -1,0 +1,1 @@
+void initModuleTest(void* bomb, int moduleId);

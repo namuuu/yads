@@ -27,8 +27,6 @@ int main() {
     
     printf("Bomb armed\n");
 
-    int storeDig[4] = {0, 0, 0, 0};
-
     while(1);
 
     return 0;
@@ -43,15 +41,13 @@ int timer() {
     }
 
     bombData->timer.value = INIT_TIMER;
-    clock_t startTime = clock();
 
     // Check that the Bomb timer is active and that the time has not expired
     while(bombData->timer.state == ACTIVE && bombData->timer.value >= 0) {
         sleep(1);
         bombData->timer.value--;
         
-        int i=0;
-        int storeDig[4] = {0, 0, 0, 0};
+        int storeDig[4];;
 
         // Store digit into digits
         // while (digit > 0) {
@@ -63,7 +59,16 @@ int timer() {
         storeDig[1] = (bombData->timer.value / 10) % 10;
         storeDig[2] = (bombData->timer.value / 100) % 10;
         storeDig[3] = (bombData->timer.value / 1000) % 10;
-  }
+
+        printf("storeDig[0] = %d\n", storeDig[0]);
+        printf("storeDig[1] = %d\n", storeDig[1]);
+        printf("storeDig[2] = %d\n", storeDig[2]);
+        printf("storeDig[3] = %d\n", storeDig[3]);
+
+        wiringPiI2CWriteReg16(fd, 0x0, digits[storeDig[3]]);
+        wiringPiI2CWriteReg16(fd, 0x2, digits[storeDig[2]]);
+        wiringPiI2CWriteReg16(fd, 0x6, digits[storeDig[1]]);
+        wiringPiI2CWriteReg16(fd, 0x8, digits[storeDig[0]]);
     }
 
     exit(EXIT_SUCCESS);

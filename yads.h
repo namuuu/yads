@@ -16,6 +16,8 @@ int timer();
 void initBomb();
 
 void initModules();
+int initTimer();
 
 void activateModule(int moduleId);
 void deactivateModule();
+

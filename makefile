@@ -3,12 +3,12 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99 -D_XOPEN_SOURCE=500
 
-TARGET_PI=/mnt/c/Users/Namu/Documents/IG2I/ObjetConnecté/target-pi
-TARGET_WPI=/mnt/c/Users/Namu/Documents/IG2I/ObjetConnecté/target_wpi
+PATH_CC=/home/tomas/Documents/Ecole/LE3/Objet_Connecté/tools-master/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
+CCC=$(PATH_CC)/arm-linux-gnueabihf-gcc
 
 INC = -I. -I $(TARGET_PI)/include/ncurses -I $(TARGET_PI)/incude -I $(TARGET_WPI)/include
 LIB = -L$(TARGET_PI)/lib -L$(TARGET_WPI)/lib
-LIBS = -lncurses -lmenu -lwiringPi
+LIBS = -lncurses -lmenu -lwiringPi -lpthread -lrt
 
 all: modules pi pc 
 

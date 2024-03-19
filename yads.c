@@ -91,6 +91,8 @@ int initTimer() {
         exit(EXIT_FAILURE);
     }
     int fd = wiringPiI2CSetup(0x70);
+
+    system("python libs/src.py");
     printf("fd = %d\n", fd);
 
     // Allumer l'horloge

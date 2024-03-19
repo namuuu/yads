@@ -16,13 +16,17 @@ modules:
 	@echo "Building modules..."
 	@cd modules && make --always-make
 
+libs:
+	@echo "Building libs..."
+	@cd libs && make --always-make
+
 pi: yads.c
 	@echo "Building for PI..."
-	@$(CCC) $(CFLAGS) $(INC) $(LIBS) $(LIB) -o pi_yads yads.c modules/moduleTestPI.o
+	@$(CCC) $(CFLAGS) $(INC) $(LIB) -o pi_yads yads.c modules/moduleTestPI.o libs/menuLibPI.o $(LIBS) 
 
 pc: yads.c
 	@echo "Building for PC..."
-	@$(CC) $(CFLAGS) $(INC) $(LIBS) $(LIB) -o pc_yads yads.c modules/moduleTestPC.o
+	@$(CC) $(CFLAGS) $(INC) $(LIB) -o pc_yads yads.c modules/moduleTestPC.o libs/menuLibPC.o $(LIBS) 
 
 clean:
 	rm -f pc_yads pi_yads

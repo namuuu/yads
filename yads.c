@@ -3,12 +3,22 @@
 #include "yads.h"
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
-#include "textcolor.h"
+
 
 bomb_t* bombData;
 
 // 0 ; 1 ; 2 ; 3 ; 4 ; 5 ; 6 ; 7 ; 8 ; 9
 const int digits[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F};
+
+char *mainMenuChoices[] = {
+                    "Modules >",
+                    "Bombinfo",
+                    "Système >",
+                    "Crédits",
+                    "Aide",
+                    "Statistiques",
+                    "Quitter",
+                  };  
 
 int main() {
 
@@ -23,9 +33,9 @@ int main() {
     pidTimer += 1;
 
     initBomb();
-    activateModule(0);
-    
     printf("Bomb armed\n");
+
+    int choix = createMenu(mainMenuChoices, sizeof(mainMenuChoices)/sizeof(mainMenuChoices[0]), '# Choix #');
 
     while(1);
 
@@ -47,7 +57,7 @@ int timer() {
         sleep(1);
         bombData->timer.value--;
         
-        int storeDig[4];;
+        /*int storeDig[4];;
 
         // Store digit into digits
         // while (digit > 0) {
@@ -68,7 +78,7 @@ int timer() {
         wiringPiI2CWriteReg16(fd, 0x0, digits[storeDig[3]]);
         wiringPiI2CWriteReg16(fd, 0x2, digits[storeDig[2]]);
         wiringPiI2CWriteReg16(fd, 0x6, digits[storeDig[1]]);
-        wiringPiI2CWriteReg16(fd, 0x8, digits[storeDig[0]]);
+        wiringPiI2CWriteReg16(fd, 0x8, digits[storeDig[0]]);*/
     }
 
     exit(EXIT_SUCCESS);
@@ -96,7 +106,7 @@ void initModules() {
 
 int initTimer() {
 // Vérifier que wiringPi est bien initialisé
-    if (wiringPiSetup() == -1) {
+    /*if (wiringPiSetup() == -1) {
         printf("Erreur d'initialisation de wiringPi\n");
         exit(EXIT_FAILURE);
     }
@@ -112,7 +122,8 @@ int initTimer() {
     // Configurer la luminosité à 50%
     wiringPiI2CWriteReg16(fd, 0xE, 0x8);
 
-    return fd;
+    return fd;*/
+    return 0;
 }
 
 void activateModule(int moduleId) {

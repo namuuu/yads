@@ -7,7 +7,10 @@
 #include <stdlib.h>
 #include <signal.h>
 
+#include "textcolor.h"
+
 #include "modules/moduleTest.h"
+#include "libs/menuLib.h"
 
 /* ---------------------------------------  PROTOTYPES  ------------------------------------------ */
 

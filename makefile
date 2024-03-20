@@ -8,7 +8,7 @@ TARGET_WPI=/mnt/c/Users/Namu/Documents/IG2I/ObjetConnecté/target_wpi
 
 INC = -I. -I $(TARGET_PI)/include/ncurses -I $(TARGET_PI)/incude -I $(TARGET_WPI)/include
 LIB = -L$(TARGET_PI)/lib -L$(TARGET_WPI)/lib
-LIBS = -lncurses -lmenu
+LIBS = -lncurses -lmenu -lwiringPi
 
 all: modules pi pc 
 

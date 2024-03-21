@@ -9,19 +9,24 @@ CCC=$(PATH_CC)/arm-linux-gnueabihf-gcc
 INC = -I. -I $(TARGET_PI)/include/ncurses -I $(TARGET_PI)/incude -I $(TARGET_WPI)/include
 LIB = -L$(TARGET_PI)/lib -L$(TARGET_WPI)/lib
 LIBS = -lncurses -lmenu -lwiringPi -lpthread -lrt
+
 all: modules pi pc 
 
 modules:
 	@echo "Building modules..."
 	@cd modules && make --always-make
 
+libs:
+	@echo "Building libs..."
+	@cd libs && make --always-make
+
 pi: yads.c
 	@echo "Building for PI..."
-	@$(CCC) $(CFLAGS) $(INC)  $(LIB) -o pi_yads yads.c modules/moduleTestPI.o $(LIBS)
+	@$(CCC) $(CFLAGS) $(INC) $(LIB) -o pi_yads yads.c modules/moduleTestPI.o libs/menuLibPI.o $(LIBS) 
 
 pc: yads.c
 	@echo "Building for PC..."
-	@$(CC) $(CFLAGS) $(INC)  $(LIB) -o pc_yads yads.c modules/moduleTestPC.o $(LIBS)
+	@$(CC) $(CFLAGS) $(INC) $(LIB) -o pc_yads yads.c modules/moduleTestPC.o libs/menuLibPC.o $(LIBS) 
 
 clean:
 	rm -f pc_yads pi_yads

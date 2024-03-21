@@ -16,6 +16,10 @@ char *mainMenuChoices[] = {
                     "Quitter",
                   };  
 
+char *bombInfoMenu[] = {
+                    "Serial number: 0AF4-21N810486-F3T4"
+};
+
 int main() {
 
     int fd = shm_open("bombData", O_CREAT | O_RDWR, S_IRWXU);  
@@ -64,6 +68,7 @@ int main() {
                 break;
             case 1:
                 printf("Bombinfo\n");
+                createMenu(bombInfoMenu, sizeof(bombInfoMenu)/sizeof(bombInfoMenu[0]), "# IG2I-OS - v1.08 (Experimental) #");
                 break;
             case 2:
                 printf("Quitter\n");

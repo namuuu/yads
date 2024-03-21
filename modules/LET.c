@@ -25,7 +25,8 @@ void initModuleLET(void* bomb, int moduleId) {
         } else if(key != 0) {
             bombData->strike++;
             if(bombData->strike == 3) {
-                exit(0);
+                //bombData->timer.state = EXPLODED;
+                exit(EXIT_FAILURE);
             }
             step = 0;
         }

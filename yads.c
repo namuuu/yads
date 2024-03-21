@@ -44,9 +44,12 @@ int main() {
                     };
 
                     for(int i = 0; i < bombData->moduleCount; i++) {
+                        printf("%s %d\n", bombData->modules[i].name, i);
                         if(bombData->modules[i].armed == DISARMED) {
+                            printf("Module %s is disarmed\n", bombData->modules[i].name);
                             strcat(modules[i], " (Disarmed)");
                         } else {
+                            printf("Module %s is armed\n", bombData->modules[i].name);
                             strcat(modules[i], " (Armed)");
                         }
 

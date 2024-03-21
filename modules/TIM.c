@@ -20,7 +20,6 @@ void initModuleTIM(void* bomb, int moduleId) {
     } else {
         bombData->strike++;
         if(bombData->strike == 3) {
-            bombData->timer.state = EXPLODED;
             exit(EXIT_FAILURE);
         }
 

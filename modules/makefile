@@ -6,10 +6,13 @@ moduleTestPC.o: moduleTest.c
 	@gcc -c moduleTest.c -o moduleTestPC.o -lncurses -lmenu
 
 moduleTestPI.o:
-	@$(CCC) $(INC) $(LIB) -c moduleTest.c -o moduleTestPI.o -lncurses
+	@$(CCC) -c moduleTest.c -o moduleTestPI.o -lwiringPi
 
 TIM.o: TIM.c
-	@$(CCC) $(INC) $(LIB) -c TIM.c -o TIM.o -lncurses
+	@$(CCC) -c TIM.c -o TIM.o -lwiringPi
+
+LET.o: LET.c
+	@$(CCC) -c LET.c -o LET.o -lwiringPi
 
 clean :
 	rm -f *.o

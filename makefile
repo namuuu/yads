@@ -22,7 +22,7 @@ libs:
 
 pi: yads.c
 	@echo "Building for PI..."
-	@$(CCC) $(CFLAGS) $(INC) $(LIB) -o pi_yads yads.c modules/moduleTestPI.o libs/menuLibPI.o $(LIBS) 
+	@$(CCC) $(CFLAGS) $(INC) $(LIB) -o pi_yads yads.c modules/TIM.o modules/LET.o libs/menuLibPI.o $(LIBS) 
 
 pc: yads.c
 	@echo "Building for PC..."

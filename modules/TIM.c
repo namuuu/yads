@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "../bomb.h"
 #include "modules.h"
 
@@ -20,8 +19,7 @@ void initModuleTIM(void* bomb, int moduleId) {
     } else {
         bombData->strike++;
         if(bombData->strike == 3) {
-            bombData->timer.state = EXPLODED;
-            exit(EXIT_FAILURE);
+            exit(0);
         }
 
         // Wait for release of key19

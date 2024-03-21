@@ -31,3 +31,6 @@ pc: yads.c
 clean:
 	rm -f pc_yads pi_yads
 	@cd modules && make clean
+
+send :
+	sshpass -p pi scp pi_yads pi@192.168.95.114:/home/pi/Desktop

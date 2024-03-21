@@ -35,7 +35,8 @@ int main() {
     initBomb();
     printf("Bomb armed\n");
 
-    int choix = createMenu(mainMenuChoices, sizeof(mainMenuChoices)/sizeof(mainMenuChoices[0]), '# Choix #');
+    int choix = createMenu(mainMenuChoices, sizeof(mainMenuChoices)/sizeof(mainMenuChoices[0]), "# Choix #");
+    afficherMenu(mainMenuChoices, sizeof(mainMenuChoices)/sizeof(mainMenuChoices[0]), choix);
 
     while(1);
 

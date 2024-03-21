@@ -61,20 +61,10 @@ int timer() {
         /*int storeDig[4];;
 
         // Store digit into digits
-        // while (digit > 0) {
-        //     storeDig[i] = digit % 10;
-        //     digit = digit / 10;
-        //     printf("storeDig[%d] = %d\n", i, storeDig[i]);
-        // i++;
         storeDig[0] = bombData->timer.value % 10;
         storeDig[1] = (bombData->timer.value / 10) % 10;
         storeDig[2] = (bombData->timer.value / 100) % 10;
         storeDig[3] = (bombData->timer.value / 1000) % 10;
-
-        printf("storeDig[0] = %d\n", storeDig[0]);
-        printf("storeDig[1] = %d\n", storeDig[1]);
-        printf("storeDig[2] = %d\n", storeDig[2]);
-        printf("storeDig[3] = %d\n", storeDig[3]);
 
         wiringPiI2CWriteReg16(fd, 0x0, digits[storeDig[3]]);
         wiringPiI2CWriteReg16(fd, 0x2, digits[storeDig[2]]);
@@ -112,6 +102,8 @@ int initTimer() {
         exit(EXIT_FAILURE);
     }
     int fd = wiringPiI2CSetup(0x70);
+
+    system("python libs/src.py");
     printf("fd = %d\n", fd);
 
     // Allumer l'horloge

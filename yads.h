@@ -9,6 +9,8 @@
 
 #include "textcolor.h"
 
+
+#include "libs/gpio.h"
 #include "modules/modules.h"
 #include "libs/menuLib.h"
 

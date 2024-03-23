@@ -12,14 +12,15 @@ void initModuleLET(void* bomb, int moduleId) {
         // Get the key pressed between pins 1 and 5
         int key = 0;
         for(int i = 0; i < 4; i++) {
-            key |= digitalRead(i) << i;
+            //key |= digitalRead(i) << i;
+            while(1);
         }
 
         // Check if step should advance
         if(key == stepList[step]) {
             step++;
             if(step == 3) {
-                bombData->modules[moduleId].state = DISARMED;
+                bombData->modules[moduleId].state = INACTIVE;
                 while(1);
             }
         } else if(key != 0) {

@@ -6,6 +6,8 @@ CFLAGS = -Wall -Wextra -std=c99 -D_XOPEN_SOURCE=500
 INC = -I. -I$(TARGET_PI)/include/ncurses -I$(TARGET_PI)/incude -I$(TARGET_WPI)/include
 LIB = -L$(TARGET_PI)/lib -L$(TARGET_WPI)/lib
 
+DEP = ../libs/buttons.o
+
 moduleTestPC.o: moduleTest.c
 	@gcc -c moduleTest.c -o moduleTestPC.o -lncurses -lmenu
 
@@ -13,7 +15,7 @@ moduleTestPI.o:
 	@$(CCC) -c moduleTest.c -o moduleTestPI.o -lwiringPi
 
 TIM.o: TIM.c
-	@$(CCC) -c TIM.c -o TIM.o -lwiringPi
+	@$(CCC) $(CFLAGS) -c TIM.c -o TIM.o -lwiringPi
 
 LET.o: LET.c
 	@$(CCC) $(CFLAGS) -c LET.c -o LET.o -lwiringPi

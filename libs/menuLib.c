@@ -13,7 +13,6 @@ WINDOW *win;
 */
 int createMenu(char **choices, int nbChoices, const char *title) {
 
-  int i; // Compteur
   int curr = 0; // Item courant
 
   // Initialisation de la fenêtre
@@ -25,7 +24,7 @@ int createMenu(char **choices, int nbChoices, const char *title) {
   keypad(stdscr, TRUE); // On active les touches spéciales (flèches, etc.)
 
   // Création de la fenêtre avec une taile de 30 lignes et 35 colonnes
-  win = newwin(30, 35, 0, 0);
+  win = newwin(30, 50, 0, 0);
 
   box(win, 0, 0);
   refresh();
@@ -83,7 +82,7 @@ void afficherMenu(char **choices, int nbChoices, int curr) {
 */
 int naviguerMenu(char **choices, int nbChoices, int curr) {
   // Naviguer dans le menu
-  int c, i;
+  int c;
   while(1) {
       afficherMenu(choices, nbChoices, curr);
         c = getch();

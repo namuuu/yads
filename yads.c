@@ -38,12 +38,11 @@ int main() {
                 printf("Modules\n");
                 int moduleOk = 0;
                 while(moduleOk == 0) {
-                    char *modules[] = {
-                        "TIM-MODULE-395",
-                        "LET-MODULE-0A4"
-                    };
+                    char **modules = malloc(bombData->moduleCount * sizeof(char*));
 
                     for(int i = 0; i < bombData->moduleCount; i++) {
+                        modules[i] = malloc(50 * sizeof(char));
+                        strcpy(modules[i], bombData->modules[i].name);
                         if(bombData->modules[i].armed == DISARMED) {
                             strcat(modules[i], " (Disarmed)");
                         } else {
@@ -55,7 +54,13 @@ int main() {
                         }
                     }
 
-                    int moduleChoice = createMenu(modules, sizeof(modules)/sizeof(modules[0]), "# Modules #");
+                    modules[bombData->moduleCount] = "Retour";
+
+                    for(int i = 0; i < bombData->moduleCount; i++) {
+                        printf("%s\n", modules[i]);
+                    }
+
+                    int moduleChoice = createMenu(modules, 3, "# Modules #");
                     moduleOk = activateModule(moduleChoice);
                 }
                 break;
@@ -161,15 +166,20 @@ int initTimer() {
 }
 
 int activateModule(int moduleId) {
+    if(moduleId == bombData->moduleCount) {
+        return 1;
+    }
     if(bombData->modules[moduleId].armed == DISARMED) {
         printf(RED "Module %s is already disarmed\n" RESET, bombData->modules[moduleId].name);
         return 0;
     }
-
-    if(bombData->activeModulepid != 0) {
-        deactivateModule();
+    if(bombData->modules[moduleId].state == ACTIVE) {
+        printf(RED "Module %s is already active\n" RESET, bombData->modules[moduleId].name);
+        return 0;
     }
 
+    
+    deactivateModule();
     bombData->modules[moduleId].state = ACTIVE;
 
     bombData->activeModulepid = fork();
@@ -182,13 +192,17 @@ int activateModule(int moduleId) {
 }
 
 void deactivateModule() {
+    printf("Deactivation\n");
+    int deactivated = 0;
     for(int i = 0; i < bombData->moduleCount; i++) {
         if(bombData->modules[i].state == ACTIVE) {
             bombData->modules[i].state = INACTIVE;
+            deactivated = 1;
         }
     }
 
-    kill(bombData->activeModulepid, SIGKILL);
+    if(deactivated == 1 && bombData->activeModulepid != 0)
+        kill(bombData->activeModulepid, SIGKILL);
     bombData->activeModulepid = 0;
 }
 

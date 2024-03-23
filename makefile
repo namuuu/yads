@@ -26,7 +26,7 @@ pi: yads.c
 
 pc: yads.c
 	@echo "Building for PC..."
-	@$(CC) $(CFLAGS) $(INC) $(LIB) -o pc_yads yads.c modules/moduleTestPC.o libs/menuLibPC.o $(LIBS) 
+	@$(CC) $(CFLAGS) $(INC) $(LIB) -o pc_yads yads.c modules/TIM.o modules/LET.o libs/menuLibPC.o $(LIBS) 
 
 clean:
 	rm -f pc_yads pi_yads

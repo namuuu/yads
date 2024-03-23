@@ -16,6 +16,10 @@ char *mainMenuChoices[] = {
                     "Quitter",
                   };  
 
+char *bombInfoMenu[] = {
+                    "Serial number: 0AF4-21N810486-F3T4"
+};
+
 int main() {
 
     int fd = shm_open("bombData", O_CREAT | O_RDWR, S_IRWXU);  
@@ -43,9 +47,12 @@ int main() {
                     for(int i = 0; i < bombData->moduleCount; i++) {
                         modules[i] = malloc(50 * sizeof(char));
                         strcpy(modules[i], bombData->modules[i].name);
+                        printf("%s %d\n", bombData->modules[i].name, i);
                         if(bombData->modules[i].armed == DISARMED) {
+                            printf("Module %s is disarmed\n", bombData->modules[i].name);
                             strcat(modules[i], " (Disarmed)");
                         } else {
+                            printf("Module %s is armed\n", bombData->modules[i].name);
                             strcat(modules[i], " (Armed)");
                         }
 
@@ -66,6 +73,7 @@ int main() {
                 break;
             case 1:
                 printf("Bombinfo\n");
+                createMenu(bombInfoMenu, sizeof(bombInfoMenu)/sizeof(bombInfoMenu[0]), "# IG2I-OS - v1.08 (Experimental) #");
                 break;
             case 2:
                 printf("Quitter\n");

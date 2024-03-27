@@ -33,4 +33,4 @@ clean:
 	@cd modules && make clean
 
 send :
-	sshpass -p pi scp pi_yads pi@192.168.224.114:/home/pi/Desktop
+	sshpass -p pi scp pi_yads pi@192.168.95.114:/home/pi/Desktop

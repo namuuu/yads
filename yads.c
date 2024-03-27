@@ -4,7 +4,6 @@
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
 
-
 bomb_t* bombData;
 
 // 0 ; 1 ; 2 ; 3 ; 4 ; 5 ; 6 ; 7 ; 8 ; 9
@@ -20,8 +19,9 @@ char *bombInfoMenu[] = {
                     "Serial number: 0AF4-21N810486-F3T4"
 };
 
-int main() {
+int main(int argc, char **argv) {
 
+    int pidTimer;
     int fd = shm_open("bombData", O_CREAT | O_RDWR, S_IRWXU);  
     // Set the size of the shared memory object
     int pageSize = sysconf(_SC_PAGE_SIZE);
@@ -29,7 +29,29 @@ int main() {
     // Map the tabEtats object into the virtual address space of the calling process
     bombData = mmap(0, pageSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
-    int pidTimer = timer();
+printf("argc = %d\n", argc);
+    if(argc == 3) {
+        // Client mode 
+        printf("Client mode\n");
+        socket_t sock = connectToServer("0.0.0.0", 5000, argv[1], atoi(argv[2]), SOCK_STREAM);
+        clientMonitor(sock);
+        return 0;
+    }
+
+    // Server mode
+    printf("Server mode\n");
+    socket_t sock = prepareForClient("0.0.0.0", 5000, SOCK_STREAM);
+
+    send_t data = {
+        .code = 0,
+        .args = {"0"},
+        .nbArgs = 1
+    };
+
+    envoyer(sock, &data, serial);
+    printf("Data sent\n");
+
+    pidTimer = timer();
     pidTimer += 1;
 
     initBomb();
@@ -212,6 +234,65 @@ void deactivateModule() {
     if(deactivated == 1 && bombData->activeModulepid != 0)
         kill(bombData->activeModulepid, SIGKILL);
     bombData->activeModulepid = 0;
+}
+
+/**
+ * \fn void serial(generic quoi, char* req) ;
+ * 
+ * @brief transforme les données en chaine de charactères  
+ * @param quoi 
+ * @param req 
+ */
+void serial(generic quoi, char* req) {
+    send_t transQuoi = (*(send_t*)quoi);
+
+    sprintf(req, "%d", transQuoi.code); // Convertit le code en char
+    if(transQuoi.nbArgs == 0)
+        return;
+    for(int i = 0; i < transQuoi.nbArgs; i++) {
+        strcat(req, "-");
+        strcat(req, transQuoi.args[i]);
+    }
+}
+
+/**
+ * \fn void deserial(generic quoi, char* msg) ;
+ * 
+ * @brief transforme les chaine de charactères en données
+ * @param quoi 
+ * @param msg 
+ */
+void deserial(generic quoi, char *msg) {
+
+    // Séparer les données selon le séparateur "-" et les ranger dans une array de strings
+    char *token = strtok(msg, "-");
+    ((received_t*)quoi)->code = atoi(token);
+    ((received_t*)quoi)->nbArgs = 0;
+    token = strtok(NULL, "-");
+    int i = 0;
+    if(token == NULL)
+        return;
+    int switchToken = atoi(token);
+    switch (switchToken)
+    {
+    default:
+        while(token != NULL){
+            ((received_t*)quoi)->args[i] = token;
+            ((received_t*)quoi)->nbArgs++;
+            token = strtok(NULL, "-");
+            i++;
+        }
+        break;
+    }
+}
+
+void clientMonitor(socket_t sock) {
+    received_t data;
+    while(1){
+        socket_t sockClient = recevoir(sock, &data, deserial);
+        printf("Received data: %d\n", data.code);
+        sockClient.fd+=1;
+    }
 }
 
 

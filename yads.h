@@ -9,10 +9,22 @@
 
 #include "textcolor.h"
 
-
+#include "libs/data.h"
 #include "libs/gpio.h"
 #include "modules/modules.h"
 #include "libs/menuLib.h"
+
+typedef struct {
+    int code;
+    char* args[10];
+    int nbArgs;
+} send_t;
+
+typedef struct {
+    int code;
+    char* args[10];
+    int nbArgs;
+} received_t;
 
 /* ---------------------------------------  PROTOTYPES  ------------------------------------------ */
 
@@ -25,4 +37,8 @@ int initTimer();
 
 int activateModule(int moduleId);
 void deactivateModule();
+
+void clientMonitor(socket_t sock) ;
+void deserial(generic quoi, char *msg);
+void serial(generic quoi, char* req) ;
 

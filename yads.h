@@ -9,7 +9,9 @@
 
 #include "textcolor.h"
 
-#include "modules/moduleTest.h"
+
+#include "libs/gpio.h"
+#include "modules/modules.h"
 #include "libs/menuLib.h"
 
 /* ---------------------------------------  PROTOTYPES  ------------------------------------------ */
@@ -21,6 +23,6 @@ void initBomb();
 void initModules();
 int initTimer();
 
-void activateModule(int moduleId);
+int activateModule(int moduleId);
 void deactivateModule();
 

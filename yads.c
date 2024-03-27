@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
     // Map the tabEtats object into the virtual address space of the calling process
     bombData = mmap(0, pageSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
-printf("argc = %d\n", argc);
+    /*printf("argc = %d\n", argc);
     if(argc == 3) {
         // Client mode 
         printf("Client mode\n");
@@ -49,7 +49,7 @@ printf("argc = %d\n", argc);
     };
 
     envoyer(sock, &data, serial);
-    printf("Data sent\n");
+    printf("Data sent\n");*/
 
     pidTimer = timer();
     pidTimer += 1;
@@ -123,6 +123,14 @@ int timer() {
     while(bombData->timer.state == ACTIVE && bombData->timer.value >= 0) {
         sleep(1);
         bombData->timer.value--;
+
+        // Buzz if timer is less than 10 sec
+        softToneCreate(1);
+        if(bombData->timer.value < 10) {
+            softToneWrite(1, 1000);
+            delay(250);
+            softToneWrite(1, 0);
+        }
         
         int storeDig[4];;
 
@@ -136,6 +144,7 @@ int timer() {
         wiringPiI2CWriteReg16(fd, 0x2, digits[storeDig[2]]);
         wiringPiI2CWriteReg16(fd, 0x6, digits[storeDig[1]]);
         wiringPiI2CWriteReg16(fd, 0x8, digits[storeDig[0]]);
+
     }
 
     exit(EXIT_SUCCESS);

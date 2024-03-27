@@ -13,12 +13,12 @@ const int digits[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F
 char *mainMenuChoices[] = {
                     "Modules >",
                     "Bombinfo",
-                    "Système >",
-                    "Crédits",
-                    "Aide",
-                    "Statistiques",
                     "Quitter",
                   };  
+
+char *bombInfoMenu[] = {
+                    "Serial number: 0AF4-21N810486-F3T4"
+};
 
 int main() {
 
@@ -35,10 +35,54 @@ int main() {
     initBomb();
     printf("Bomb armed\n");
 
-    int choix = createMenu(mainMenuChoices, sizeof(mainMenuChoices)/sizeof(mainMenuChoices[0]), "# Choix #");
-    afficherMenu(mainMenuChoices, sizeof(mainMenuChoices)/sizeof(mainMenuChoices[0]), choix);
+    while(1) {
+        int choix = createMenu(mainMenuChoices, sizeof(mainMenuChoices)/sizeof(mainMenuChoices[0]), "# Choix #");
+        switch (choix) {
+            case 0:
+                printf("Modules\n");
+                int moduleOk = 0;
+                while(moduleOk == 0) {
+                    char **modules = malloc(bombData->moduleCount * sizeof(char*));
 
-    while(1);
+                    for(int i = 0; i < bombData->moduleCount; i++) {
+                        modules[i] = malloc(50 * sizeof(char));
+                        strcpy(modules[i], bombData->modules[i].name);
+                        printf("%s %d\n", bombData->modules[i].name, i);
+                        if(bombData->modules[i].armed == DISARMED) {
+                            printf("Module %s is disarmed\n", bombData->modules[i].name);
+                            strcat(modules[i], " (Disarmed)");
+                        } else {
+                            printf("Module %s is armed\n", bombData->modules[i].name);
+                            strcat(modules[i], " (Armed)");
+                        }
+
+                        if(bombData->modules[i].state == ACTIVE) {
+                            strcat(modules[i], " (Active)");
+                        }
+                    }
+
+                    modules[bombData->moduleCount] = "Retour";
+
+                    for(int i = 0; i < bombData->moduleCount; i++) {
+                        printf("%s\n", modules[i]);
+                    }
+
+                    int moduleChoice = createMenu(modules, 3, "# Modules #");
+                    moduleOk = activateModule(moduleChoice);
+                }
+                break;
+            case 1:
+                printf("Bombinfo\n");
+                createMenu(bombInfoMenu, sizeof(bombInfoMenu)/sizeof(bombInfoMenu[0]), "# IG2I-OS - v1.08 (Experimental) #");
+                break;
+            case 2:
+                printf("Quitter\n");
+                kill(pidTimer, SIGKILL);
+                return 0;
+            default:
+                break;
+        }
+    }
 
     return 0;
 }
@@ -58,7 +102,7 @@ int timer() {
         sleep(1);
         bombData->timer.value--;
         
-        /*int storeDig[4];;
+        int storeDig[4];;
 
         // Store digit into digits
         storeDig[0] = bombData->timer.value % 10;
@@ -69,7 +113,7 @@ int timer() {
         wiringPiI2CWriteReg16(fd, 0x0, digits[storeDig[3]]);
         wiringPiI2CWriteReg16(fd, 0x2, digits[storeDig[2]]);
         wiringPiI2CWriteReg16(fd, 0x6, digits[storeDig[1]]);
-        wiringPiI2CWriteReg16(fd, 0x8, digits[storeDig[0]]);*/
+        wiringPiI2CWriteReg16(fd, 0x8, digits[storeDig[0]]);
     }
 
     exit(EXIT_SUCCESS);
@@ -84,20 +128,30 @@ void initBomb() {
 }
 
 void initModules() {
-    module_t moduleTest = {
+    module_t moduleTime = {
         .armed = ARMED,
         .state = INACTIVE,
-        .name = "TEST-078",
-        .init = initModuleTest
+        .name = "TIM-MODULE-395",
+        .init = initModuleTIM
     };
 
-    bombData->modules[bombData->moduleCount] = moduleTest;
+    bombData->modules[bombData->moduleCount] = moduleTime;
+    bombData->moduleCount++;
+
+    module_t moduleLetter = {
+        .armed = ARMED,
+        .state = INACTIVE,
+        .name = "LET-MODULE-0A4",
+        .init = initModuleLET
+    };
+
+    bombData->modules[bombData->moduleCount] = moduleLetter;
     bombData->moduleCount++;
 }
 
 int initTimer() {
 // Vérifier que wiringPi est bien initialisé
-    /*if (wiringPiSetup() == -1) {
+    if (wiringPiSetup() == -1) {
         printf("Erreur d'initialisation de wiringPi\n");
         exit(EXIT_FAILURE);
     }
@@ -115,21 +169,25 @@ int initTimer() {
     // Configurer la luminosité à 50%
     wiringPiI2CWriteReg16(fd, 0xE, 0x8);
 
-    return fd;*/
+    return fd;
     return 0;
 }
 
-void activateModule(int moduleId) {
+int activateModule(int moduleId) {
+    if(moduleId == bombData->moduleCount) {
+        return 1;
+    }
     if(bombData->modules[moduleId].armed == DISARMED) {
         printf(RED "Module %s is already disarmed\n" RESET, bombData->modules[moduleId].name);
-        return;
+        return 0;
+    }
+    if(bombData->modules[moduleId].state == ACTIVE) {
+        printf(RED "Module %s is already active\n" RESET, bombData->modules[moduleId].name);
+        return 0;
     }
 
-    if(bombData->activeModulepid != 0) {
-        deactivateModule();
-        return;
-    }
-
+    
+    deactivateModule();
     bombData->modules[moduleId].state = ACTIVE;
 
     bombData->activeModulepid = fork();
@@ -138,17 +196,21 @@ void activateModule(int moduleId) {
         exit(EXIT_SUCCESS);
     }
 
-    return;
+    return 1;
 }
 
 void deactivateModule() {
+    printf("Deactivation\n");
+    int deactivated = 0;
     for(int i = 0; i < bombData->moduleCount; i++) {
         if(bombData->modules[i].state == ACTIVE) {
             bombData->modules[i].state = INACTIVE;
+            deactivated = 1;
         }
     }
 
-    kill(bombData->activeModulepid, SIGKILL);
+    if(deactivated == 1 && bombData->activeModulepid != 0)
+        kill(bombData->activeModulepid, SIGKILL);
     bombData->activeModulepid = 0;
 }
 

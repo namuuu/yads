@@ -1,4 +1,4 @@
-.PHONY: all modules pi pc clean
+.PHONY: all modules pi clean
 
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99 -D_XOPEN_SOURCE=500
@@ -10,7 +10,7 @@ INC = -I. -I $(TARGET_PI)/include/ncurses -I $(TARGET_PI)/incude -I $(TARGET_WPI
 LIB = -L$(TARGET_PI)/lib -L$(TARGET_WPI)/lib
 LIBS = -lncurses -lmenu -lwiringPi -lpthread -lrt
 
-all: modules pi pc 
+all: modules pi 
 
 modules:
 	@echo "Building modules..."
@@ -22,15 +22,15 @@ libs:
 
 pi: yads.c
 	@echo "Building for PI..."
-	@$(CCC) $(CFLAGS) $(INC) $(LIB) -o pi_yads yads.c libs/menuLibPI.o libs/session.o libs/data.o $(LIBS) 
+	@$(CCC) $(CFLAGS) $(INC) $(LIB) -o pi_yads yads.c modules/TIM.o modules/LET.o libs/menuLibPI.o libs/buttons.o libs/session.o libs/data.o $(LIBS) 
 
 pc: yads.c
 	@echo "Building for PC..."
-	@$(CC) $(CFLAGS) $(INC) $(LIB) -o pc_yads yads.c modules/moduleTestPC.o libs/menuLibPC.o $(LIBS) 
+	@$(CC) $(CFLAGS) $(INC) $(LIB) -o pc_yads yads.c modules/TIM.o modules/LET.o libs/menuLibPC.o $(LIBS) 
 
 clean:
 	rm -f pc_yads pi_yads
 	@cd modules && make clean
 
 send :
-	sshpass -p pi scp pi_yads pi@192.168.95.114:/home/pi/Desktop
+	sshpass -p pi scp pi_yads pi@192.168.224.114:/home/pi/Desktop

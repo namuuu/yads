@@ -29,8 +29,8 @@ int main(int argc, char **argv) {
     // Map the tabEtats object into the virtual address space of the calling process
     bombData = mmap(0, pageSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
-    /*printf("argc = %d\n", argc);
-    if(argc == 3) {
+    printf("argc = %d\n", argc);
+    /*if(argc == 3) {
         // Client mode 
         printf("Client mode\n");
         socket_t sock = connectToServer("0.0.0.0", 5000, argv[1], atoi(argv[2]), SOCK_STREAM);
@@ -49,6 +49,7 @@ int main(int argc, char **argv) {
     };
 
     envoyer(sock, &data, serial);
+    recevoir(sock, &data, deserial);
     printf("Data sent\n");*/
 
     pidTimer = timer();
@@ -127,7 +128,7 @@ int timer() {
         // Buzz if timer is less than 10 sec
         softToneCreate(1);
         if(bombData->timer.value < 10) {
-            softToneWrite(1, 1000);
+            softToneWrite(1, 440);
             delay(250);
             softToneWrite(1, 0);
         }
@@ -188,17 +189,17 @@ int initTimer() {
     }
     int fd = wiringPiI2CSetup(0x70);
 
-    system("python libs/src.py");
+    //system("python libs/src.py");
     printf("fd = %d\n", fd);
 
     // Allumer l'horloge
-    wiringPiI2CWriteReg16(fd, 0x2, 0x1);
+    wiringPiI2CWrite(fd, 0x21);
     // Configurer la pin INT/ROW
-    wiringPiI2CWriteReg16(fd, 0xA, 0x0);
+    wiringPiI2CWrite(fd, 0xA0);
     // Allumer l'écran
-    wiringPiI2CWriteReg16(fd, 0x8, 0x1);
+    wiringPiI2CWrite(fd, 0x81);
     // Configurer la luminosité à 50%
-    wiringPiI2CWriteReg16(fd, 0xE, 0x8);
+    wiringPiI2CWrite(fd, 0xE7);
 
     return fd;
     return 0;

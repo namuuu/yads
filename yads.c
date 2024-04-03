@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "bomb.h"
 #include "yads.h"
-#include <wiringPi.h>
+#include "../target_wpi/include/wiringPi.h"
 #include <wiringPiI2C.h>
 
 bomb_t* bombData;

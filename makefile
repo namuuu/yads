@@ -3,7 +3,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99 -D_XOPEN_SOURCE=500
 
-PATH_CC=/home/tomas/Documents/Ecole/LE3/Objet_Connecté/tools-master/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
+PATH_CC=/home/kali/Documents/ObjetConnecté/tools-master/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
 CCC=$(PATH_CC)/arm-linux-gnueabihf-gcc
 
 INC = -I. -I $(TARGET_PI)/include/ncurses -I $(TARGET_PI)/incude -I $(TARGET_WPI)/include

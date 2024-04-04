@@ -3,8 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "../../target-pi/include/ncurses.h"
-#include <menu.h>
+#include "../../target-pi/include/ncurses/ncurses.h"
 
 #define X_RPI 106
 #define Y_RPI 29

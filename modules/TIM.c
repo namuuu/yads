@@ -9,6 +9,7 @@ void initModuleTIM(void* bomb, int moduleId) {
     bomb_t* bombData = (bomb_t*) bomb;
 
     eteindreMatrice();
+    softToneCreate(2);
 
     while(1) {
 
@@ -22,10 +23,13 @@ void initModuleTIM(void* bomb, int moduleId) {
         if(lastDigit == CORRECT_DIGIT) {
             bombData->modules[moduleId].state = INACTIVE;
             bombData->modules[moduleId].armed = DISARMED;
-            printf("Disarmed\n");
-            exit(EXIT_SUCCESS);
+            return;
         } else {
             bombData->strike++;
+            printf("Strike %d\n", bombData->strike);
+            softToneWrite(2, 320);
+            delay(150);
+            softToneWrite(2, 0);
             if(bombData->strike == 3) {
                 exit(0);
             }

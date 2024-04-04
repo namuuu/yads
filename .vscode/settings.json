@@ -11,7 +11,9 @@
     "files.associations": {
         "*.erd": "json",
         "*.vuerd": "json",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "yads.h": "c",
+        "wiringpii2c.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

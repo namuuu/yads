@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include "bomb.h"
 #include "yads.h"
-#include "../target_wpi/include/wiringPi.h"
-#include <wiringPiI2C.h>
-
 bomb_t* bombData;
 
 // 0 ; 1 ; 2 ; 3 ; 4 ; 5 ; 6 ; 7 ; 8 ; 9
@@ -19,9 +16,20 @@ char *bombInfoMenu[] = {
                     "Serial number: 0AF4-21N810486-F3T4"
 };
 
+char *bombDefused[] = {
+                    "Bomb defused"
+};
+
+char *bombExploded[] = {
+                    "Bomb exploded"
+};
+
+int pidTimer;
+int strikeBuffer;
+
 int main(int argc, char **argv) {
 
-    int pidTimer;
+    
     int fd = shm_open("bombData", O_CREAT | O_RDWR, S_IRWXU);  
     // Set the size of the shared memory object
     int pageSize = sysconf(_SC_PAGE_SIZE);
@@ -146,6 +154,42 @@ int timer() {
         wiringPiI2CWriteReg16(fd, 0x6, digits[storeDig[1]]);
         wiringPiI2CWriteReg16(fd, 0x8, digits[storeDig[0]]);
 
+        int isBombDefused = 1;
+        for(int i = 0; i < bombData->moduleCount; i++) {
+            if(bombData->modules[i].armed == ARMED) {
+                isBombDefused = 0;
+                break;
+            }
+        }
+
+        if(isBombDefused == 1) {
+            bombData->timer.state = INACTIVE;
+            softToneWrite(1, 320);
+            delay(150);
+            softToneWrite(1, 0);
+            delay(150);
+            softToneWrite(1, 320);
+            delay(150);
+            softToneWrite(1, 0);
+            createMenu(bombDefused, sizeof(bombDefused)/sizeof(bombDefused[0]), "# Congrats ! #");
+            exit(EXIT_SUCCESS);
+        }
+
+        if(bombData->strike >= 3) {
+            bombData->timer.state = INACTIVE;
+            softToneWrite(1, 500);
+            delay(500);
+            softToneWrite(1, 0);
+            createMenu(bombExploded, sizeof(bombExploded)/sizeof(bombExploded[0]), "# Game Over #");
+            exit(EXIT_SUCCESS);
+        }
+
+        if(bombData->strike != strikeBuffer) {
+            strikeBuffer = bombData->strike;
+            softToneWrite(1, 320);
+            delay(150);
+            softToneWrite(1, 0);
+        }
     }
 
     exit(EXIT_SUCCESS);
@@ -155,6 +199,7 @@ void initBomb() {
     bombData->timer.state = ACTIVE;
     bombData->moduleCount = 0;
     bombData->activeModulepid = 0;
+    bombData->strike = 0;
 
     initModules();
 }
@@ -171,7 +216,7 @@ void initModules() {
     bombData->moduleCount++;
 
     module_t moduleLetter = {
-        .armed = ARMED,
+        .armed = DISARMED,
         .state = INACTIVE,
         .name = "LET-MODULE-0A4",
         .init = initModuleLET
@@ -225,6 +270,9 @@ int activateModule(int moduleId) {
     bombData->activeModulepid = fork();
     if(bombData->activeModulepid == 0) {
         bombData->modules[0].init(bombData, 0);
+        softToneWrite(1, 320);
+        delay(150);
+        softToneWrite(1, 0);
         exit(EXIT_SUCCESS);
     }
 
@@ -232,7 +280,6 @@ int activateModule(int moduleId) {
 }
 
 void deactivateModule() {
-    printf("Deactivation\n");
     int deactivated = 0;
     for(int i = 0; i < bombData->moduleCount; i++) {
         if(bombData->modules[i].state == ACTIVE) {

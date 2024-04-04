@@ -13,6 +13,9 @@
 #include "libs/gpio.h"
 #include "modules/modules.h"
 #include "libs/menuLib.h"
+#include "../target_wpi/include/wiringPi.h"
+#include "../target_wpi/include/wiringPiI2C.h"
+#include "../target_wpi/include/softTone.h"
 
 typedef struct {
     int code;

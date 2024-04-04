@@ -1,4 +1,4 @@
-#define INIT_TIMER 30
+#define INIT_TIMER 300
 #define INIT_STRIKE 3
 
 #define CHECK(sts,msg) if ((sts) == -1) {perror(msg); exit(-1);}
@@ -14,11 +14,6 @@ typedef enum {
     ACTIVE,
     INACTIVE,
 } state_t;
-
-typedef enum {
-    FALSE,
-    TRUE
-} bool_t;
 
 /* ---------------------------------------  STRUCT  ------------------------------------------ */
 

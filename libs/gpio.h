@@ -17,3 +17,5 @@ int directionIsPressed(int value);
 */
 int locationIsPressed(int col, int row);
 int anyIsPressed();
+
+void writeSPI(__uint8_t addr, __uint8_t data);

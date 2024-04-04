@@ -1,4 +1,4 @@
-.PHONY: all modules pi clean
+.PHONY: all modules pi monitor clean
 
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99 -D_XOPEN_SOURCE=500

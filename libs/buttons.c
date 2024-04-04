@@ -58,3 +58,19 @@ int anyIsPressed() {
         return 1;
     return 0;
 }
+
+void initSPI() {
+    pinMode(11, OUTPUT);
+    writeSPI(0x09, 0x00);
+    writeSPI(0x0A, 0x03);
+    writeSPI(0x0B, 0x07);
+    writeSPI(0x0C, 0x01);
+}
+
+void writeSPI(_uint8_t addr, _uint8_t data) {
+    __uint8_t dataToSend[2] = {addr, data};
+    digitalWrite(11, LOW);
+    wiringPiSPIDataRW(0, dataToSend, 2);
+    digitalWrite(11, HIGH);
+
+}

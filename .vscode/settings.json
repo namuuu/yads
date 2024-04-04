@@ -13,7 +13,12 @@
         "*.vuerd": "json",
         "stdio.h": "c",
         "yads.h": "c",
-        "wiringpii2c.h": "c"
+        "wiringpii2c.h": "c",
+        "data.h": "c",
+        "bomb.h": "c",
+        "menulib.h": "c",
+        "modules.h": "c",
+        "gpio.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

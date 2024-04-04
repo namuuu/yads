@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include "bomb.h"
 #include "yads.h"
+#include "modules/modules.h"
+
+void initModuleLAB(void* bomb, int moduleId);
 bomb_t* bombData;
 
 // 0 ; 1 ; 2 ; 3 ; 4 ; 5 ; 6 ; 7 ; 8 ; 9
@@ -26,10 +29,10 @@ char *bombExploded[] = {
 
 int pidTimer;
 int strikeBuffer;
+socket_t sock;
+socket_t sockClient;
 
-int main(int argc, char **argv) {
-
-    
+int main() {
     int fd = shm_open("bombData", O_CREAT | O_RDWR, S_IRWXU);  
     // Set the size of the shared memory object
     int pageSize = sysconf(_SC_PAGE_SIZE);
@@ -37,34 +40,27 @@ int main(int argc, char **argv) {
     // Map the tabEtats object into the virtual address space of the calling process
     bombData = mmap(0, pageSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
-    printf("argc = %d\n", argc);
-    /*if(argc == 3) {
-        // Client mode 
-        printf("Client mode\n");
-        socket_t sock = connectToServer("0.0.0.0", 5000, argv[1], atoi(argv[2]), SOCK_STREAM);
-        clientMonitor(sock);
-        return 0;
-    }
-
     // Server mode
-    printf("Server mode\n");
-    socket_t sock = prepareForClient("0.0.0.0", 5000, SOCK_STREAM);
+    sock = prepareForClient("0.0.0.0", 5000, SOCK_STREAM);
+    // sockClient = accepterConnexion(sock);
 
-    send_t data = {
-        .code = 0,
-        .args = {"0"},
-        .nbArgs = 1
-    };
+    received_t dataReceived;
+    recevoir(sock, &dataReceived, deserial);
+    printf("Received data: %d\n", dataReceived.code);
 
-    envoyer(sock, &data, serial);
-    recevoir(sock, &data, deserial);
-    printf("Data sent\n");*/
+    // while(1) {
+    //     send_t dataSent = {
+    //         .code = 1,
+    //         .nbArgs = 0
+    //     };
+    //     envoyer(sock, &dataSent, serial);
+    //     printf("Data sent\n");
+    // }
+    
 
     pidTimer = timer();
-    pidTimer += 1;
 
     initBomb();
-    printf("Bomb armed\n");
 
     while(1) {
         int choix = createMenu(mainMenuChoices, sizeof(mainMenuChoices)/sizeof(mainMenuChoices[0]), "# Choix #");
@@ -98,7 +94,7 @@ int main(int argc, char **argv) {
                         printf("%s\n", modules[i]);
                     }
 
-                    int moduleChoice = createMenu(modules, 3, "# Modules #");
+                    int moduleChoice = createMenu(modules, 4, "# Modules #");
                     moduleOk = activateModule(moduleChoice);
                 }
                 break;
@@ -190,6 +186,13 @@ int timer() {
             delay(150);
             softToneWrite(1, 0);
         }
+
+        // Write module data in a tmpfile
+        FILE *tmpFile = fopen("tmpfile", "w");
+        for(int i = 0; i < bombData->moduleCount; i++) {
+            fprintf(tmpFile, "%s %d\n", bombData->modules[i].name, bombData->modules[i].armed);
+        }
+        fclose(tmpFile);
     }
 
     exit(EXIT_SUCCESS);
@@ -216,7 +219,7 @@ void initModules() {
     bombData->moduleCount++;
 
     module_t moduleLetter = {
-        .armed = DISARMED,
+        .armed = ARMED,
         .state = INACTIVE,
         .name = "LET-MODULE-0A4",
         .init = initModuleLET
@@ -224,6 +227,33 @@ void initModules() {
 
     bombData->modules[bombData->moduleCount] = moduleLetter;
     bombData->moduleCount++;
+
+    module_t moduleLab = {
+        .armed = ARMED,
+        .state = INACTIVE,
+        .name = "LAB-MODULE-PE9",
+        .init = initModuleLAB
+    };
+
+    bombData->modules[bombData->moduleCount] = moduleLab;
+    bombData->moduleCount++;
+
+    for(int i = 0; i < bombData->moduleCount; i++) {
+        printf("Module %s initialized\n", bombData->modules[i].name);
+        send_t data = {
+            .code = 1,
+            .nbArgs = 3
+        };
+
+        data.args[0] = malloc(10 * sizeof(char));
+        sprintf(data.args[0], "%d", i);
+        data.args[1] = malloc(30 * sizeof(char));
+        sprintf(data.args[1], "%s", "TEST");
+        data.args[2] = malloc(10 * sizeof(char));
+        sprintf(data.args[2], "%d", bombData->modules[i].state);
+
+        //envoyer(sock, &data, serial);
+    }
 }
 
 int initTimer() {
@@ -233,9 +263,6 @@ int initTimer() {
         exit(EXIT_FAILURE);
     }
     int fd = wiringPiI2CSetup(0x70);
-
-    //system("python libs/src.py");
-    printf("fd = %d\n", fd);
 
     // Allumer l'horloge
     wiringPiI2CWrite(fd, 0x21);
@@ -269,7 +296,7 @@ int activateModule(int moduleId) {
 
     bombData->activeModulepid = fork();
     if(bombData->activeModulepid == 0) {
-        bombData->modules[0].init(bombData, 0);
+        bombData->modules[moduleId].init(bombData, moduleId);
         softToneWrite(1, 320);
         delay(150);
         softToneWrite(1, 0);

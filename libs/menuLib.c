@@ -28,7 +28,7 @@ int createMenu(char **choices, int nbChoices, const char *title) {
   keypad(stdscr, TRUE); // On active les touches spéciales (flèches, etc.)
 
   // Centrer la fenêtre avec dimension RPI
-  win = newwin(15, 40, (Y_RPI/2)-10, (X_RPI/2)-25);
+  win = newwin(15, 60, (Y_RPI/2)-25, (X_RPI/2)-25);
 
   box(win, 0, 0);
   refresh();
@@ -170,3 +170,5 @@ int naviguerMenu(char **choices, int nbChoices, int curr) {
     }
     return -1;
 }
+
+

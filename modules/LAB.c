@@ -3,6 +3,8 @@
 #include "../libs/gpio.h"
 #include "modules.h"
 
+void stike(bomb_t *bomb) ;
+
 enum directionalButton {
     DIRECTION_DOWN = 23,
     DIRECTION_UP = 25,
@@ -46,386 +48,386 @@ void initModuleLAB(void* bomb, int moduleId) {
         .y = 3
     };
 
-    labyrinth.tiles[0][0] = {
+    labyrinth.tiles[0][0] = (tile_t) {
         .wallUp = 1,
         .wallRight = 1,
         .wallDown = 0,
         .wallLeft = 1
     };
-    labyrinth.tiles[0][1] = {
+    labyrinth.tiles[0][1] = (tile_t) {
         .wallUp = 1,
         .wallRight = 0,
         .wallDown = 0,
         .wallLeft = 1
     };
-    labyrinth.tiles[0][2] = {
+    labyrinth.tiles[0][2] = (tile_t) {
         .wallUp = 1,
         .wallRight = 1,
         .wallDown = 0,
         .wallLeft = 0
     };
-    labyrinth.tiles[0][3] = {
+    labyrinth.tiles[0][3] = (tile_t) {
         .wallUp = 1,
         .wallRight = 1,
         .wallDown = 0,
         .wallLeft = 1
     };
-    labyrinth.tiles[0][4] = {
+    labyrinth.tiles[0][4] = (tile_t) {
         .wallUp = 1,
         .wallRight = 0,
         .wallDown = 0,
         .wallLeft = 1
     };
-    labyrinth.tiles[0][5] = {
-        .wallUp = 1,
-        .wallRight = 0,
-        .wallDown = 1,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[0][6] = {
+    labyrinth.tiles[0][5] = (tile_t) {
         .wallUp = 1,
         .wallRight = 0,
         .wallDown = 1,
         .wallLeft = 0
     };
-    labyrinth.tiles[0][7] = {
-        .wallUp = 1,
-        .wallRight = 1,
-        .wallDown = 1,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[1][0] = {
-        .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[1][1] = {
-        .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 1,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[1][2] = {
-        .wallUp = 0,
-        .wallRight = 1,
-        .wallDown = 0,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[1][3] = {
-        .wallUp = 0,
-        .wallRight = 1,
-        .wallDown = 0,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[1][4] = {
-        .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[1][5] = {
-        .wallUp = 1,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[1][6] = {
+    labyrinth.tiles[0][6] = (tile_t) {
         .wallUp = 1,
         .wallRight = 0,
         .wallDown = 1,
         .wallLeft = 0
     };
-    labyrinth.tiles[1][7] = {
+    labyrinth.tiles[0][7] = (tile_t) {
         .wallUp = 1,
         .wallRight = 1,
         .wallDown = 1,
         .wallLeft = 0
     };
-    labyrinth.tiles[2][0] = {
-        .wallUp = 0,
-        .wallRight = 1,
-        .wallDown = 0,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[2][1] = {
-        .wallUp = 1,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[2][2] = {
-        .wallUp = 0,
-        .wallRight = 1,
-        .wallDown = 0,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[2][3] = {
-        .wallUp = 0,
-        .wallRight = 1,
-        .wallDown = 0,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[2][4] = {
-        .wallUp = 0,
-        .wallRight = 1,
-        .wallDown = 0,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[2][5] = {
+    labyrinth.tiles[1][0] = (tile_t) {
         .wallUp = 0,
         .wallRight = 0,
-        .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[2][6] = {
-        .wallUp = 1,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[2][7] = {
-        .wallUp = 1,
-        .wallRight = 1,
-        .wallDown = 1,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[3][0] = {
-        .wallUp = 0,
-        .wallRight = 1,
         .wallDown = 0,
         .wallLeft = 1
     };
-    labyrinth.tiles[3][1] = {
-        .wallUp = 0,
-        .wallRight = 1,
-        .wallDown = 0,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[3][2] = {
-        .wallUp = 0,
-        .wallRight = 1,
-        .wallDown = 0,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[3][3] = {
-        .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[3][4] = {
-        .wallUp = 0,
-        .wallRight = 1,
-        .wallDown = 1,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[3][5] = {
-        .wallUp = 1,
-        .wallRight = 0,
-        .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[3][6] = {
+    labyrinth.tiles[1][1] = (tile_t) {
         .wallUp = 0,
         .wallRight = 0,
         .wallDown = 1,
         .wallLeft = 0
     };
-    labyrinth.tiles[3][7] = {
+    labyrinth.tiles[1][2] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[1][3] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[1][4] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 0,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[1][5] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
+        .wallDown = 0,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[1][6] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
+        .wallDown = 1,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[1][7] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 1,
+        .wallDown = 1,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[2][0] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[2][1] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[2][2] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[2][3] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[2][4] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[2][5] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 0,
+        .wallDown = 1,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[2][6] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
+        .wallDown = 0,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[2][7] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 1,
+        .wallDown = 1,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[3][0] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[3][1] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[3][2] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[3][3] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 0,
+        .wallDown = 1,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[3][4] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 1,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[3][5] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
+        .wallDown = 1,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[3][6] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 0,
+        .wallDown = 1,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[3][7] = (tile_t) {
         .wallUp = 1,
         .wallRight = 1,
         .wallDown = 0,
         .wallLeft = 0
     };
-    labyrinth.tiles[4][0] = {
-        .wallUp = 1,
+    labyrinth.tiles[4][0] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[4][1] = (tile_t) {
+        .wallUp = 0,
         .wallRight = 1,
         .wallDown = 1,
         .wallLeft = 1
     };
-    labyrinth.tiles[4][1] = {
+    labyrinth.tiles[4][2] = (tile_t) {
         .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[4][2] = {
-        .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[4][3] = {
-        .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[4][4] = {
-        .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[4][5] = {
-        .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[4][6] = {
-        .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[4][7] = {
-        .wallUp = 1,
         .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[4][3] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[4][4] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
+        .wallDown = 1,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[4][5] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
+        .wallDown = 1,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[4][6] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
+        .wallDown = 0,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[4][7] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[5][0] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[5][1] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
         .wallDown = 1,
         .wallLeft = 1
     };
-    labyrinth.tiles[5][0] = {
-        .wallUp = 1,
+    labyrinth.tiles[5][2] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 0,
+        .wallDown = 1,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[5][3] = (tile_t) {
+        .wallUp = 0,
         .wallRight = 1,
+        .wallDown = 1,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[5][4] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
         .wallDown = 1,
         .wallLeft = 1
     };
-    labyrinth.tiles[5][1] = {
-        .wallUp = 0,
+    labyrinth.tiles[5][5] = (tile_t) {
+        .wallUp = 1,
         .wallRight = 0,
+        .wallDown = 1,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[5][6] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
         .wallDown = 0,
         .wallLeft = 0
     };
-    labyrinth.tiles[5][2] = {
+    labyrinth.tiles[5][7] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[6][0] = (tile_t) {
         .wallUp = 0,
         .wallRight = 0,
         .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[6][1] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
+        .wallDown = 1,
         .wallLeft = 0
     };
-    labyrinth.tiles[5][3] = {
-        .wallUp = 0,
-        .wallRight = 0,
+    labyrinth.tiles[6][2] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 1,
         .wallDown = 0,
         .wallLeft = 0
     };
-    labyrinth.tiles[5][4] = {
-        .wallUp = 0,
+    labyrinth.tiles[6][3] = (tile_t) {
+        .wallUp = 1,
         .wallRight = 0,
         .wallDown = 0,
-        .wallLeft = 0
+        .wallLeft = 1
     };
-    labyrinth.tiles[5][5] = {
-        .wallUp = 0,
+    labyrinth.tiles[6][4] = (tile_t) {
+        .wallUp = 1,
         .wallRight = 0,
-        .wallDown = 0,
+        .wallDown = 1,
         .wallLeft = 0
     };
-    labyrinth.tiles[5][6] = {
-        .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[5][7] = {
+    labyrinth.tiles[6][5] = (tile_t) {
         .wallUp = 1,
         .wallRight = 1,
         .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[6][0] = {
-        .wallUp = 1,
-        .wallRight = 1,
-        .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[6][1] = {
-        .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
         .wallLeft = 0
     };
-    labyrinth.tiles[6][2] = {
+    labyrinth.tiles[6][6] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[6][7] = (tile_t) {
+        .wallUp = 0,
+        .wallRight = 1,
+        .wallDown = 0,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[7][0] = (tile_t) {
         .wallUp = 0,
         .wallRight = 0,
-        .wallDown = 0,
+        .wallDown = 1,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[7][1] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 1,
+        .wallDown = 1,
         .wallLeft = 0
     };
-    labyrinth.tiles[6][3] = {
+    labyrinth.tiles[7][2] = (tile_t) {
         .wallUp = 0,
         .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 0
+        .wallDown = 1,
+        .wallLeft = 1
     };
-    labyrinth.tiles[6][4] = {
+    labyrinth.tiles[7][3] = (tile_t) {
         .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
+        .wallRight = 1,
+        .wallDown = 1,
         .wallLeft = 0
     };
-    labyrinth.tiles[6][5] = {
+    labyrinth.tiles[7][4] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
+        .wallDown = 1,
+        .wallLeft = 1
+    };
+    labyrinth.tiles[7][5] = (tile_t) {
+        .wallUp = 1,
+        .wallRight = 0,
+        .wallDown = 1,
+        .wallLeft = 0
+    };
+    labyrinth.tiles[7][6] = (tile_t) {
         .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
+        .wallRight = 1,
+        .wallDown = 1,
         .wallLeft = 0
     };
-    labyrinth.tiles[6][6] = {
+    labyrinth.tiles[7][7] = (tile_t) {
         .wallUp = 0,
-        .wallRight = 0,
-        .wallDown = 0,
-        .wallLeft = 0
-    };
-    labyrinth.tiles[6][7] = {
-        .wallUp = 1,
-        .wallRight = 1,
-        .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[7][0] = {
-        .wallUp = 1,
-        .wallRight = 1,
-        .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[7][1] = {
-        .wallUp = 1,
-        .wallRight = 1,
-        .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[7][2] = {
-        .wallUp = 1,
-        .wallRight = 1,
-        .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[7][3] = {
-        .wallUp = 1,
-        .wallRight = 1,
-        .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[7][4] = {
-        .wallUp = 1,
-        .wallRight = 1,
-        .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[7][5] = {
-        .wallUp = 1,
-        .wallRight = 1,
-        .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[7][6] = {
-        .wallUp = 1,
-        .wallRight = 1,
-        .wallDown = 1,
-        .wallLeft = 1
-    };
-    labyrinth.tiles[7][7] = {
-        .wallUp = 1,
         .wallRight = 1,
         .wallDown = 1,
         .wallLeft = 1
@@ -463,18 +465,26 @@ void initModuleLAB(void* bomb, int moduleId) {
         if(directionIsPressed(DIRECTION_UP)) {
             if(labyrinth.tiles[player.x][player.y].wallUp == 0) {
                 player.y--;
+            } else {
+                stike(bombData);
             }
         } else if(directionIsPressed(DIRECTION_DOWN)) {
             if(labyrinth.tiles[player.x][player.y].wallDown == 0) {
                 player.y++;
+            } else {
+                stike(bombData);
             }
         } else if(directionIsPressed(DIRECTION_LEFT)) {
             if(labyrinth.tiles[player.x][player.y].wallLeft == 0) {
                 player.x--;
+            } else {
+                stike(bombData);
             }
         } else if(directionIsPressed(DIRECTION_RIGHT)) {
             if(labyrinth.tiles[player.x][player.y].wallRight == 0) {
                 player.x++;
+            } else {
+                stike(bombData);
             }
         }
 
@@ -486,9 +496,16 @@ void initModuleLAB(void* bomb, int moduleId) {
         }
 
         while(anyIsPressed());
+    }    
+}
+
+void strike(bomb_t *bomb) {
+    bomb->strike++;
+    printf("Strike %d\n", bomb->strike);
+    softToneWrite(2, 320);
+    delay(150);
+    softToneWrite(2, 0);
+    if(bomb->strike == 3) {
+        exit(0);
     }
-
-    
-
-    
 }

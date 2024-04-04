@@ -25,7 +25,7 @@ libs:
 
 pi: yads.c
 	@echo "Building for PI..."
-	@$(CCC) $(CFLAGS) $(INC) $(LIB) $(LIBS) -o pi_yads yads.c modules/TIM.o modules/LET.o libs/menuLibPI.o libs/buttons.o libs/session.o libs/data.o 
+	@$(CCC) $(CFLAGS) $(INC) $(LIB) $(LIBS) -o pi_yads yads.c modules/TIM.o modules/LET.o modules/LAB.o libs/menuLibPI.o libs/buttons.o libs/session.o libs/data.o 
 
 monitor: monitor.c
 	@echo "Building Monitor..."
@@ -40,5 +40,5 @@ clean:
 	@cd modules && make clean
 
 send :
-	sshpass -p pi scp pi_yads pi@192.168.12.114:/home/pi/Desktop
-	sshpass -p pi scp monitor pi@192.168.12.114:/home/pi/Desktop
+	sshpass -p pi scp pi_yads pi@192.168.95.114:/home/pi/Desktop
+	sshpass -p pi scp monitor pi@192.168.95.114:/home/pi/Desktop

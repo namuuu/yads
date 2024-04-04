@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "../../target_wpi/include/wiringPi.h"
 #include "../../target_wpi/include/wiringPiI2C.h"
+#include "../../target_wpi/include/softTone.h"
 #include <time.h>
 #include <unistd.h>
 

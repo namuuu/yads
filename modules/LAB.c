@@ -3,7 +3,10 @@
 #include "../libs/gpio.h"
 #include "modules.h"
 
-void stike(bomb_t *bomb) ;
+void strike(bomb_t *bomb) ;
+void initSPI();
+void writeSPI(__uint8_t addr, __uint8_t data) ;
+void dessin();
 
 enum directionalButton {
     DIRECTION_DOWN = 23,
@@ -30,15 +33,16 @@ typedef struct {
     tile_t tiles[8][8];
 } labyrinth_t;
 
-
+labyrinth_t labyrinth;
 
 void initModuleLAB(void* bomb, int moduleId) {
-    printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa\n");
+    printf("OOOOOOOOOOOO\n");
     bomb_t* bombData = (bomb_t*) bomb;
 
     eteindreMatrice();
+    initSPI();
 
-    labyrinth_t labyrinth;
+    
     position_t player = {
         .x = 1,
         .y = 2
@@ -450,41 +454,32 @@ void initModuleLAB(void* bomb, int moduleId) {
     printf("Player: %d %d\n", player.x, player.y);
 
     while(1) {
-        // __uint8_t line1;
-
-        // int y  = 0;
-        // for(int i = 0; i < 8; i++) {
-        //     if(i == player.x && y == player.y) {
-        //         line1 |= 1 << i;
-        //     }
-        // }
-        // writeSPI((__uint8_t)0, line1);
-
+        dessin();
 
         while(!anyIsPressed());
         if(directionIsPressed(DIRECTION_UP)) {
             if(labyrinth.tiles[player.x][player.y].wallUp == 0) {
                 player.y--;
             } else {
-                stike(bombData);
+                strike(bombData);
             }
         } else if(directionIsPressed(DIRECTION_DOWN)) {
             if(labyrinth.tiles[player.x][player.y].wallDown == 0) {
                 player.y++;
             } else {
-                stike(bombData);
+                strike(bombData);
             }
         } else if(directionIsPressed(DIRECTION_LEFT)) {
             if(labyrinth.tiles[player.x][player.y].wallLeft == 0) {
                 player.x--;
             } else {
-                stike(bombData);
+                strike(bombData);
             }
         } else if(directionIsPressed(DIRECTION_RIGHT)) {
             if(labyrinth.tiles[player.x][player.y].wallRight == 0) {
                 player.x++;
             } else {
-                stike(bombData);
+                strike(bombData);
             }
         }
 
@@ -497,6 +492,64 @@ void initModuleLAB(void* bomb, int moduleId) {
 
         while(anyIsPressed());
     }    
+}
+
+/**
+ * @fn void initSPI();
+ * @brief Initialisation du bus SPI
+*/
+void initSPI() {
+    // Init PIN 11 en sortie
+    pinMode(11, OUTPUT);
+    // Decode mode
+    writeSPI(0x09, 0x00);
+    // Luminosité
+    writeSPI(0x0A, 0x03);
+    // Scan limit
+    writeSPI(0x0B, 0x07);
+    // Allumer le composant
+    writeSPI(0x0C, 0x01);
+}
+
+/**
+ * @fn void writeSPI(__uint8_t addr, __uint8_t data);
+ * @brief Ecriture sur le bus SPI
+ * @param addr Adresse du registre
+ * @param data Donnée à écrire
+*/
+void writeSPI(__uint8_t addr, __uint8_t data) {
+
+    // Création d'un tableau pour l'envoi des données dans la même trame
+    __uint8_t dataToSend[2] = {addr, data};
+
+    digitalWrite(11, LOW);
+    wiringPiSPIDataRW(0, dataToSend, 2);
+    digitalWrite(11, HIGH);
+}
+
+/**
+ * @fn void dessin();
+ * @brief Dessin de la matrice de LED à l'aide de valeurs hexadécimales
+*/
+void dessin() {
+    // Colonne 0 à 7
+    for (int i = 0; i < 8; i++) {
+        // int line = 0;
+        // for (int j = 0; j < 8; j++) {
+        //     if(labyrinth.player.x == i && labyrinth.player.y == j) {
+        //         printf("Player: %d %d\n", i, j);
+        //         line |= 1 << j;
+        //     }
+        //     if(labyrinth.exit.x == i && labyrinth.exit.y == j) {
+        //         printf("Exit: %d %d\n", i, j);
+        //         line |= 1 << j;
+        //     }
+        // }
+        int line = 0xCC;
+        // print line in binary
+        printf("%d\n", line);
+        writeSPI(i+1, line);
+    }
 }
 
 void strike(bomb_t *bomb) {

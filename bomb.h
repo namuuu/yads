@@ -1,4 +1,4 @@
-#define INIT_TIMER 300
+#define INIT_TIMER 3
 #define INIT_STRIKE 3
 
 #define CHECK(sts,msg) if ((sts) == -1) {perror(msg); exit(-1);}

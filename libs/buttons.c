@@ -3,13 +3,6 @@
 int rowsPins[] = {2, 3, 21, 22}; // PIN wPi
 int colsPins[] = {6, 25, 24, 23}; // PIN wPi
 
-enum directionalButton {
-    DIRECTION_DOWN = 23,
-    DIRECTION_UP = 25,
-    DIRECTION_LEFT = 6,
-    DIRECTION_RIGHT = 24,
-};
-
 void allumerMatrice() {
     for (int i = 0; i < 4; i++) {
         // LIGNE

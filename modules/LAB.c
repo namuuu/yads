@@ -3,17 +3,13 @@
 #include "../libs/gpio.h"
 #include "modules.h"
 
+#define LAB_MODULE 1
+
 void strike(bomb_t *bomb) ;
 void initSPI();
+void deacSPI();
 void writeSPI(__uint8_t addr, __uint8_t data) ;
 void dessin();
-
-enum directionalButton {
-    DIRECTION_DOWN = 23,
-    DIRECTION_UP = 25,
-    DIRECTION_LEFT = 6,
-    DIRECTION_RIGHT = 24,
-};
 
 typedef struct {
     int wallUp;
@@ -39,6 +35,8 @@ void initModuleLAB(void* bomb, int moduleId) {
     printf("OOOOOOOOOOOO\n");
     bomb_t* bombData = (bomb_t*) bomb;
 
+    wiringPiSetup();
+    wiringPiSPISetup(0, 500000);
     eteindreMatrice();
     initSPI();
 
@@ -48,10 +46,20 @@ void initModuleLAB(void* bomb, int moduleId) {
         .y = 2
     };
     position_t exit = {
-        .x = 1,
-        .y = 3
+        .x = 5,
+        .y = 5
     };
 
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            labyrinth.tiles[i][j].wallUp = 0;
+            labyrinth.tiles[i][j].wallRight = 0;
+            labyrinth.tiles[i][j].wallDown = 0;
+            labyrinth.tiles[i][j].wallLeft = 0;
+        }
+    }
+
+    if(1){
     labyrinth.tiles[0][0] = (tile_t) {
         .wallUp = 1,
         .wallRight = 1,
@@ -113,10 +121,10 @@ void initModuleLAB(void* bomb, int moduleId) {
         .wallLeft = 0
     };
     labyrinth.tiles[1][2] = (tile_t) {
-        .wallUp = 0,
-        .wallRight = 1,
+        .wallUp = 1,
+        .wallRight = 0,
         .wallDown = 0,
-        .wallLeft = 0
+        .wallLeft = 1
     };
     labyrinth.tiles[1][3] = (tile_t) {
         .wallUp = 0,
@@ -436,56 +444,50 @@ void initModuleLAB(void* bomb, int moduleId) {
         .wallDown = 1,
         .wallLeft = 1
     };
+    }
 
-    
 
     labyrinth.player = player;
     labyrinth.exit = exit;
 
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            labyrinth.tiles[i][j].wallUp = 0;
-            labyrinth.tiles[i][j].wallRight = 0;
-            labyrinth.tiles[i][j].wallDown = 0;
-            labyrinth.tiles[i][j].wallLeft = 0;
-        }
-    }
+    
 
-    printf("Player: %d %d\n", player.x, player.y);
+    // printf("Player: %d %d\n", labyrinth.player.x, labyrinth.player.y);
 
     while(1) {
         dessin();
 
         while(!anyIsPressed());
         if(directionIsPressed(DIRECTION_UP)) {
-            if(labyrinth.tiles[player.x][player.y].wallUp == 0) {
-                player.y--;
+            if(labyrinth.tiles[labyrinth.player.y][labyrinth.player.x].wallUp == 0) {
+                labyrinth.player.y--;
             } else {
                 strike(bombData);
             }
         } else if(directionIsPressed(DIRECTION_DOWN)) {
-            if(labyrinth.tiles[player.x][player.y].wallDown == 0) {
-                player.y++;
+            if(labyrinth.tiles[labyrinth.player.y][labyrinth.player.x].wallDown == 0) {
+                labyrinth.player.y++;
             } else {
                 strike(bombData);
             }
         } else if(directionIsPressed(DIRECTION_LEFT)) {
-            if(labyrinth.tiles[player.x][player.y].wallLeft == 0) {
-                player.x--;
+            if(labyrinth.tiles[labyrinth.player.y][labyrinth.player.x].wallLeft == 0) {
+                labyrinth.player.x--;
             } else {
                 strike(bombData);
             }
         } else if(directionIsPressed(DIRECTION_RIGHT)) {
-            if(labyrinth.tiles[player.x][player.y].wallRight == 0) {
-                player.x++;
+            if(labyrinth.tiles[labyrinth.player.y][labyrinth.player.x].wallRight == 0) {
+                labyrinth.player.x++;
             } else {
                 strike(bombData);
             }
         }
 
-        printf("Player: %d %d\n", player.x, player.y);
+        // printf("Player: %d %d\n", labyrinth.player.x, labyrinth.player.y);
 
-        if(player.x == exit.x && player.y == exit.y) {
+        if(labyrinth.player.x == exit.x && labyrinth.player.y == exit.y) {
+            deacSPI();
             bombData->modules[moduleId].state = INACTIVE;
             bombData->modules[moduleId].armed = DISARMED;
         }
@@ -511,6 +513,10 @@ void initSPI() {
     writeSPI(0x0C, 0x01);
 }
 
+void deacSPI() {
+    writeSPI(0x0C, 0x00);
+}
+
 /**
  * @fn void writeSPI(__uint8_t addr, __uint8_t data);
  * @brief Ecriture sur le bus SPI
@@ -534,31 +540,33 @@ void writeSPI(__uint8_t addr, __uint8_t data) {
 void dessin() {
     // Colonne 0 à 7
     for (int i = 0; i < 8; i++) {
-        // int line = 0;
-        // for (int j = 0; j < 8; j++) {
-        //     if(labyrinth.player.x == i && labyrinth.player.y == j) {
-        //         printf("Player: %d %d\n", i, j);
-        //         line |= 1 << j;
-        //     }
-        //     if(labyrinth.exit.x == i && labyrinth.exit.y == j) {
-        //         printf("Exit: %d %d\n", i, j);
-        //         line |= 1 << j;
-        //     }
-        // }
-        int line = 0xCC;
+        int line = 0;
+        for (int j = 0; j < 8; j++) {
+            if(labyrinth.player.x == j && labyrinth.player.y == i) {
+                line |= 1 << (7-j);
+                // line = 0xff;
+            }
+            if(labyrinth.exit.x == j && labyrinth.exit.y == i) {
+                // printf("Exit: %d %d\n", i, j);
+                line |= 1 << (7-j);
+                // line = 0xff;
+            }
+        }
+
+        // int line = 0xCC;
         // print line in binary
-        printf("%d\n", line);
+        // printf("%d\n", line);
         writeSPI(i+1, line);
     }
 }
 
 void strike(bomb_t *bomb) {
     bomb->strike++;
-    printf("Strike %d\n", bomb->strike);
+    // printf("Strike %d\n", bomb->strike);
     softToneWrite(2, 320);
     delay(150);
     softToneWrite(2, 0);
-    if(bomb->strike == 3) {
+    if(bomb->strike >= 3) {
         exit(0);
     }
 }

@@ -94,7 +94,7 @@ int main() {
                         printf("%s\n", modules[i]);
                     }
 
-                    int moduleChoice = createMenu(modules, 4, "# Modules #");
+                    int moduleChoice = createMenu(modules, bombData->moduleCount+1, "# Modules #");
                     moduleOk = activateModule(moduleChoice);
                 }
                 break;
@@ -136,6 +136,9 @@ int timer() {
             delay(250);
             softToneWrite(1, 0);
         }
+
+        if(bombData->timer.value == 0)
+            bombData->strike = 3;
         
         int storeDig[4];;
 
@@ -236,6 +239,16 @@ void initModules() {
     };
 
     bombData->modules[bombData->moduleCount] = moduleLab;
+    bombData->moduleCount++;
+
+    module_t moduleDec = {
+        .armed = ARMED,
+        .state = INACTIVE,
+        .name = "DEC-MODULE-404",
+        .init = initModuleDEC
+    };
+
+    bombData->modules[bombData->moduleCount] = moduleDec;
     bombData->moduleCount++;
 
     for(int i = 0; i < bombData->moduleCount; i++) {

@@ -1,4 +1,4 @@
-all: TIM.o LET.o LAB.o
+all: TIM.o LET.o LAB.o DEC.o
 PATH_CC=/home/kali/Documents/ObjetConnecté/tools-master/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
 CCC=$(PATH_CC)/arm-linux-gnueabihf-gcc
 CFLAGS = -Wall -Wextra -std=c99 -D_XOPEN_SOURCE=500
@@ -20,6 +20,9 @@ LET.o: LET.c
 
 LAB.o: LAB.c
 	@$(CCC) $(CFLAGS) -c LAB.c -o LAB.o -lwiringPi
+
+DEC.o: DEC.c
+	@$(CCC) $(CFLAGS) -c DEC.c -o DEC.o -lwiringPi
 
 clean :
 	rm -f *.o

@@ -18,7 +18,8 @@
         "bomb.h": "c",
         "menulib.h": "c",
         "modules.h": "c",
-        "gpio.h": "c"
+        "gpio.h": "c",
+        "wiringpi.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
